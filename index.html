@@ -70,22 +70,19 @@ table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}th,td{pa
     'llama-3b':  { id: 'Llama-3.2-3B-Instruct-q4f16_1-MLC',   size: '~2GB',   label: '3B · balanced · default · most laptops' },
     'qwen-7b':   { id: 'Qwen2.5-7B-Instruct-q4f16_1-MLC',     size: '~5GB',   label: '7B · capable · needs decent GPU (M-series Mac / 8GB+ VRAM)' },
     'llama-8b':  { id: 'Llama-3.1-8B-Instruct-q4f16_1-MLC',   size: '~5GB',   label: '8B · common · needs decent GPU' },
-    'llama-70b': { id: 'Llama-3.1-70B-Instruct-q4f16_1-MLC',  size: '~40GB',  label: '70B · frontier · needs serious GPU + 64GB+ RAM' },
-  };
+    'llama-70b': { id: 'Llama-3.1-70B-Instruct-q4f16_1-MLC',  size: '~40GB',  label: '70B · frontier · needs serious GPU + 64GB+ RAM' }};
   const DEFAULT_MODEL = 'llama-3b';
 
   const T3_PROVIDERS = {
     anthropic: { label: 'Anthropic Claude', models: ['claude-sonnet-4-5','claude-opus-4-7','claude-haiku-4-5'], default: 'claude-sonnet-4-5', url: 'https://api.anthropic.com/v1/messages' },
     openai:    { label: 'OpenAI',           models: ['gpt-4o','gpt-4o-mini','o1-mini'],                          default: 'gpt-4o-mini',      url: 'https://api.openai.com/v1/chat/completions' },
-    google:    { label: 'Google Gemini',    models: ['gemini-1.5-pro','gemini-1.5-flash','gemini-2.0-flash-exp'], default: 'gemini-1.5-flash', url: 'https://generativelanguage.googleapis.com/v1beta/models/' },
-  };
+    google:    { label: 'Google Gemini',    models: ['gemini-1.5-pro','gemini-1.5-flash','gemini-2.0-flash-exp'], default: 'gemini-1.5-flash', url: 'https://generativelanguage.googleapis.com/v1beta/models/' }};
 
   // ─── State ───────────────────────────────────────────────────────
   const STATE = {
     config: loadConfig(),
     ai: { ready: false, loading: false, progress: 0, engine: null, model: null },
-    mesh: { active: false, peers: new Map(), bc: null, signal: null },
-  };
+    mesh: { active: false, peers: new Map(), bc: null, signal: null }};
 
   function loadConfig() {
     try { return JSON.parse(localStorage.getItem('fall-kit.config') || '{}'); }
@@ -152,8 +149,7 @@ table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}th,td{pa
     if (tier === 'T2' && STATE.ai.ready && STATE.ai.engine) {
       const r = await STATE.ai.engine.chat.completions.create({
         messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userMsg }],
-        max_tokens: maxTokens,
-      });
+        max_tokens: maxTokens});
       return r.choices[0].message.content;
     }
     if (tier === 'T3' && STATE.config.api_key && STATE.config.api_provider) {
@@ -170,8 +166,7 @@ table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}th,td{pa
       const r = await fetch(T3_PROVIDERS.anthropic.url, {
         method: 'POST',
         headers: { 'content-type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01' },
-        body: JSON.stringify({ model, max_tokens: maxTokens, system: sys, messages: [{ role: 'user', content: msg }] }),
-      });
+        body: JSON.stringify({ model, max_tokens: maxTokens, system: sys, messages: [{ role: 'user', content: msg }] })});
       if (!r.ok) throw new Error('Anthropic ' + r.status + ': ' + (await r.text()).slice(0, 200));
       const j = await r.json();
       return j.content[0].text;
@@ -180,8 +175,7 @@ table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}th,td{pa
       const r = await fetch(T3_PROVIDERS.openai.url, {
         method: 'POST',
         headers: { 'content-type': 'application/json', 'Authorization': 'Bearer ' + key },
-        body: JSON.stringify({ model, max_tokens: maxTokens, messages: [{ role: 'system', content: sys }, { role: 'user', content: msg }] }),
-      });
+        body: JSON.stringify({ model, max_tokens: maxTokens, messages: [{ role: 'system', content: sys }, { role: 'user', content: msg }] })});
       if (!r.ok) throw new Error('OpenAI ' + r.status);
       const j = await r.json();
       return j.choices[0].message.content;
@@ -190,8 +184,7 @@ table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}th,td{pa
       const r = await fetch(T3_PROVIDERS.google.url + model + ':generateContent?key=' + encodeURIComponent(key), {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: sys + '\n\n---\n\n' + msg }] }], generationConfig: { maxOutputTokens: maxTokens } }),
-      });
+        body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: sys + '\n\n---\n\n' + msg }] }], generationConfig: { maxOutputTokens: maxTokens } })});
       if (!r.ok) throw new Error('Google ' + r.status);
       const j = await r.json();
       return j.candidates[0].content.parts[0].text;
@@ -432,8 +425,7 @@ table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}th,td{pa
     openMint: openMint,  // v1.2 · launch kcc-mint with this seed prefilled as parent
     MODELS: WEBLLM_MODELS,
     PROVIDERS: T3_PROVIDERS,
-    state: STATE,
-  };
+    state: STATE};
 })(typeof window !== 'undefined' ? window : globalThis);
 
 </script>
@@ -523,14 +515,13 @@ function renderPnL(v){const mPerm=monthlyData(state.permFees,'fee');const mTemp=
 
 const T0_QA=[
   {q:/fee|charge|perm|permanent|percentage/i,a:'Permanent placement fees: typically 15-25% of first-year gross salary. Agreed in Terms of Business before introduction. Fee becomes payable on candidate start date (or per agreed trigger). Conduct Regs 2003: fee terms must be in writing. No fee for work-seekers (EAA 1973 s.6). VAT applies to recruitment services. Invoice on start date, payment per agreed terms (typically 30 days).'},
-  {q:/margin|temp|temporary|charge.?rate|pay.?rate/i,a:'Temp margin = charge rate to client minus pay rate to worker minus employer costs (NI, holiday pay, pension, apprenticeship levy). Typical gross margins: 15-30% of charge rate. Must factor in: employer NI (13.8% above threshold), holiday pay (12.07% of basic), workplace pension (3% qualifying earnings), apprenticeship levy (0.5% if payroll >£3M). AWR compliance may reduce margin after 12 weeks if pay must increase.'},
+  {q:/margin|temp|temporary|charge.?rate|pay.?rate/i,a:'Temp margin = charge rate to client minus pay rate to worker minus employer costs (NI, holiday pay, pension, apprenticeship levy). Typical gross margins: 15-30% of charge rate. Must factor in: employer NI (13.8% above threshold), holiday pay (12.07% of basic), workplace pension (3% qualifying earnings), apprenticeship levy (0.5% if payroll >TBAM). AWR compliance may reduce margin after 12 weeks if pay must increase.'},
   {q:/invoice|payment|credit|debt|outstanding/i,a:'Invoice management: perm fees invoiced on start date, temp charges weekly/monthly per agreement. Standard payment terms 30 days. Conduct Regs 2003: agency must pay temp workers for work done regardless of client payment. Credit control: statement at 30 days, reminder at 45, formal demand at 60, debt recovery/legal at 90+. Interest on late payment: Late Payment of Commercial Debts (Interest) Act 1998 — Bank of England base rate + 8%.'},
   {q:/rebate|refund|guarantee|leaver/i,a:'Fee rebate: standard for permanent placements. Typical: 100% refund weeks 1-4, 75% weeks 5-8, 50% weeks 9-12. Conditions: client notifies within 7 days of departure, agency given chance to replace. No rebate for: redundancy, constructive dismissal, client materially changes role. Pro-rata calculation based on weeks served. Rebate schedule must be in written terms.'},
   {q:/awr|12.?week|agency.?worker|equal/i,a:'AWR 2010: 12 qualifying weeks = equal pay and conditions. Track weeks per placement — breaks of 6+ weeks reset (exceptions: sickness ≤28 weeks, annual leave, jury service, pregnancy ≤26 weeks). New role with same client may or may not reset depending on whether "substantively different". Agency must obtain comparable pay information from client. Margin may reduce if pay increases — plan for this commercially.'},
   {q:/commission|consultant|split|bonus/i,a:'Consultant commission: typically 10-30% of fee/margin generated. Structures: threshold-based (higher % above target), flat rate, team-based. Commission usually paid month following invoice payment (not invoice date). Clawback if rebate triggered. Employment contracts should clearly state commission terms, calculation method, and payment timing.'},
-  {q:/vat|hmrc|tax|corporation/i,a:'VAT: recruitment services standard-rated at 20%. Register if taxable turnover exceeds £90,000. Flat Rate Scheme may benefit smaller agencies (typically 14.5% for labour-only, 12% for staff supply). Corporation Tax: 25% (over £250K profits), 19% small profits rate (under £50K). RTI for temp payroll: submit FPS by or before each payday, EPS by 19th.'},
-  {q:/insurance|indemnity|liability/i,a:'Recruitment insurance: Professional Indemnity (PI) — covers negligent advice, mis-hire. Public Liability (PL) — injury on client premises. Employers\' Liability (EL) — mandatory for temps on agency payroll, min £5M (Employers\' Liability (Compulsory Insurance) Act 1969). Consider also: cyber liability, D&O, fidelity guarantee. REC membership includes some PI cover.'},
-];
+  {q:/vat|hmrc|tax|corporation/i,a:'VAT: recruitment services standard-rated at 20%. Register if taxable turnover exceeds TBA. Flat Rate Scheme may benefit smaller agencies (typically 14.5% for labour-only, 12% for staff supply). Corporation Tax: 25% (over TBAK profits), 19% small profits rate (under TBAK). RTI for temp payroll: submit FPS by or before each payday, EPS by 19th.'},
+  {q:/insurance|indemnity|liability/i,a:'Recruitment insurance: Professional Indemnity (PI) — covers negligent advice, mis-hire. Public Liability (PL) — injury on client premises. Employers\' Liability (EL) — mandatory for temps on agency payroll, min TBAM (Employers\' Liability (Compulsory Insurance) Act 1969). Consider also: cyber liability, D&O, fidelity guarantee. REC membership includes some PI cover.'}];
 function askT0(q){for(const r of T0_QA){if(r.q.test(q))return {answer:r.a,source:'T0 · UK recruitment rules'}}return null}
 async function askT3(q){if(!state.settings.anthropicKey)return null;try{const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'x-api-key':state.settings.anthropicKey,'anthropic-version':'2023-06-01','content-type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,messages:[{role:'user',content:'You are a UK recruitment agency finance expert. Fees, margins, AWR, payroll, HMRC, Conduct Regs. Concise.\n\n'+q}]})});if(!res.ok)return null;const j=await res.json();return {answer:j.content?.[0]?.text,source:'T3 · Anthropic'}}catch(e){return null}}
 function renderQA(v){v.innerHTML=`<div class="section-h"><h2>Q & A</h2><div class="sub">T0 + T3 BYOK</div></div><div class="card" style="max-width:780px"><div class="chat" id="chatBox">${(state.ui.chat||[]).map(m=>`<div class="msg ${m.role}">${esc(m.text)}${m.source?`<div class="src">${esc(m.source)}</div>`:''}</div>`).join('')}</div><div class="chat-input"><input id="chatIn" placeholder="Ask… 'perm fee calculation?' · 'temp margin?' · 'AWR impact on margin?'" onkeydown="if(event.key==='Enter')askQ()"><button class="btn brass" onclick="askQ()">Ask</button></div></div>`;const box=$('#chatBox');if(box)box.scrollTop=box.scrollHeight}
@@ -565,43 +556,37 @@ async function seedDemo(){if(state.placements.length||state.firm)return;
   const cons=[
     {id:uid('co'),name:'Emma Richardson',desk:'IT',commissionPercent:25,ts:now(),isDemo:true},
     {id:uid('co'),name:'Marcus Taylor',desk:'Finance',commissionPercent:20,ts:now(),isDemo:true},
-    {id:uid('co'),name:'Aisha Begum',desk:'Construction',commissionPercent:22,ts:now(),isDemo:true},
-  ];
+    {id:uid('co'),name:'Aisha Begum',desk:'Construction',commissionPercent:22,ts:now(),isDemo:true}];
   state.consultants=cons;for(const c of cons)await idbPut('consultants',c);
 
   const plcs=[
     {id:uid('pl'),candidate:'Rebecca Osei',client:'Meridian Financial',role:'Financial Analyst',type:'permanent',startDate:'2026-05-12',status:'active',consultant:'Marcus Taylor',ts:now(),isDemo:true},
     {id:uid('pl'),candidate:'Alex Turner',client:'TechVault Ltd',role:'Senior Python Developer',type:'contract',startDate:'2026-04-01',status:'active',consultant:'Emma Richardson',ts:now(),isDemo:true},
-    {id:uid('pl'),candidate:'Liam O\'Brien',client:'BuildRight Construction',role:'Site Manager',type:'temporary',startDate:'2026-04-01',status:'active',consultant:'Aisha Begum',ts:now(),isDemo:true},
-  ];
+    {id:uid('pl'),candidate:'Liam O\'Brien',client:'BuildRight Construction',role:'Site Manager',type:'temporary',startDate:'2026-04-01',status:'active',consultant:'Aisha Begum',ts:now(),isDemo:true}];
   state.placements=plcs;for(const p of plcs)await idbPut('placements',p);
 
   const perm=[
-    {id:uid('pf'),date:'2026-05-12',candidate:'Rebecca Osei',client:'Meridian Financial',salary:65000,feePercent:20,fee:13000,consultant:'Marcus Taylor',rebateStatus:'in guarantee',ts:now(),isDemo:true},
-  ];
+    {id:uid('pf'),date:'2026-05-12',candidate:'Rebecca Osei',client:'Meridian Financial',salary:65000,feePercent:20,fee:13000,consultant:'Marcus Taylor',rebateStatus:'in guarantee',ts:now(),isDemo:true}];
   state.permFees=perm;for(const f of perm)await idbPut('permFees',f);
 
   const temp=[
     {id:uid('te'),date:'2026-06-13',candidate:'Alex Turner',client:'TechVault Ltd',hours:40,chargeRate:68.75,payRate:45,margin:950,awrWeek:'11',consultant:'Emma Richardson',ts:now(),isDemo:true},
     {id:uid('te'),date:'2026-06-13',candidate:'Liam O\'Brien',client:'BuildRight Construction',hours:45,chargeRate:35,payRate:22,margin:585,awrWeek:'11',consultant:'Aisha Begum',ts:now(),isDemo:true},
     {id:uid('te'),date:'2026-06-06',candidate:'Alex Turner',client:'TechVault Ltd',hours:40,chargeRate:68.75,payRate:45,margin:950,awrWeek:'10',consultant:'Emma Richardson',ts:now(),isDemo:true},
-    {id:uid('te'),date:'2026-06-06',candidate:'Liam O\'Brien',client:'BuildRight Construction',hours:40,chargeRate:35,payRate:22,margin:520,awrWeek:'10',consultant:'Aisha Begum',ts:now(),isDemo:true},
-  ];
+    {id:uid('te'),date:'2026-06-06',candidate:'Liam O\'Brien',client:'BuildRight Construction',hours:40,chargeRate:35,payRate:22,margin:520,awrWeek:'10',consultant:'Aisha Begum',ts:now(),isDemo:true}];
   state.tempEntries=temp;for(const t of temp)await idbPut('tempEntries',t);
 
   const inv=[
     {id:uid('in'),date:'2026-05-12',invoiceNo:'APT-2026-001',client:'Meridian Financial',description:'Perm placement — Rebecca Osei — Financial Analyst',amount:13000,dueDate:'2026-06-11',status:'paid',ts:now(),isDemo:true},
     {id:uid('in'),date:'2026-06-13',invoiceNo:'APT-2026-002',client:'TechVault Ltd',description:'Temp charges — Alex Turner — w/e 13 Jun',amount:2750,dueDate:'2026-07-13',status:'sent',ts:now(),isDemo:true},
-    {id:uid('in'),date:'2026-06-13',invoiceNo:'APT-2026-003',client:'BuildRight Construction',description:'Temp charges — Liam O\'Brien — w/e 13 Jun',amount:1575,dueDate:'2026-07-13',status:'sent',ts:now(),isDemo:true},
-  ];
+    {id:uid('in'),date:'2026-06-13',invoiceNo:'APT-2026-003',client:'BuildRight Construction',description:'Temp charges — Liam O\'Brien — w/e 13 Jun',amount:1575,dueDate:'2026-07-13',status:'sent',ts:now(),isDemo:true}];
   state.invoices=inv;for(const i of inv)await idbPut('invoices',i);
 
   const exp=[
     {id:uid('ex'),date:'2026-06-01',category:'rent',description:'Monthly office rent',supplier:'Chancery Properties',amount:2800,ts:now(),isDemo:true},
     {id:uid('ex'),date:'2026-06-01',category:'job boards',description:'LinkedIn Recruiter + Indeed',supplier:'LinkedIn/Indeed',amount:950,ts:now(),isDemo:true},
     {id:uid('ex'),date:'2026-06-01',category:'insurance',description:'PI + EL insurance',supplier:'Hiscox',amount:320,ts:now(),isDemo:true},
-    {id:uid('ex'),date:'2026-06-15',category:'IT/software',description:'ATS license',supplier:'Bullhorn',amount:450,ts:now(),isDemo:true},
-  ];
+    {id:uid('ex'),date:'2026-06-15',category:'IT/software',description:'ATS license',supplier:'Bullhorn',amount:450,ts:now(),isDemo:true}];
   state.expenses=exp;for(const e of exp)await idbPut('expenses',e);
 
   await auditLog('demo.seeded',{reasoning:'first boot'});await persistUI()}
