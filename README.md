@@ -37,4 +37,4 @@ Run your recruitment agency finances from one HTML file. 9 tabs cover placements
 
 ## Licence
 
-MIT · Simon Gant · prime 997 · ◊·κ=1.
+MIT · Simon Gant.
